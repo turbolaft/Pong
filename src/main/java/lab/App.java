@@ -1,7 +1,7 @@
 package lab;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +20,7 @@ public class App extends Application {
 	}
 	
 	private Canvas canvas;
+	private AnimationTimer timer;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -37,25 +38,19 @@ public class App extends Application {
 			
 			//Exit program when main window is closed
 			primaryStage.setOnCloseRequest(this::exitProgram);
-			
-			//Draw scene on a separate thread to avoid blocking UI.
-			new Thread(this::drawScene).start();
+			//graphic context is used for a painting
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+		
+			timer = new DrawingThread(gc);
+			timer.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Draws objects into the canvas. Put you code here. 
-	 *
-	 *@return      nothing
-	 */
-	private void drawScene() {
-		//graphic context is used for a painting
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		// put your code here
-		// gc.setFill(Color.AQUA);
-		// gc.setStroke(Color.BLACK);
+	@Override
+	public void stop() throws Exception {
+		timer.stop();
+		super.stop();
 	}
 	
 	private void exitProgram(WindowEvent evt) {

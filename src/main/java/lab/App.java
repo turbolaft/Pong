@@ -38,10 +38,7 @@ public class App extends Application {
 			
 			//Exit program when main window is closed
 			primaryStage.setOnCloseRequest(this::exitProgram);
-			//graphic context is used for a painting
-			GraphicsContext gc = canvas.getGraphicsContext2D();
-		
-			timer = new DrawingThread(gc);
+			timer = new DrawingThread(canvas);
 			timer.start();
 		} catch (Exception e) {
 			e.printStackTrace();

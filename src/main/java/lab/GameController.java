@@ -37,7 +37,7 @@ public class GameController {
     @FXML
     private Button user2_top;
     @FXML
-    private Button user1_down;
+    private Button user1_down;  
     @FXML
     private Button user2_down;
     
@@ -47,8 +47,8 @@ public class GameController {
 
     public void start() {
         this.game = new Game(canvas.getWidth(), canvas.getHeight());
-        this.game.getScoreManager().getLeftGoalArea().getScore().setName(text1.getText());
-        this.game.getScoreManager().getRightGoalArea().getScore().setName(text2.getText());
+        // this.game.getScoreManager().getLeftGoalArea().getScore().setName(text1.getText());
+        // this.game.getScoreManager().getRightGoalArea().getScore().setName(text2.getText());
         String fileName = "scores.txt";
 
         try (RandomAccessFile file = new RandomAccessFile(new File(fileName), "rw")) {
@@ -58,6 +58,9 @@ public class GameController {
             e.printStackTrace();
         }
 
+
+        text1.setText(this.game.getScoreManager().getLeftGoalArea().getScore().getName());
+        text2.setText(this.game.getScoreManager().getRightGoalArea().getScore().getName());
         input1.textProperty().addListener((observe, oldValue, newValue) -> {
             text1.setText(newValue);
             this.game.getScoreManager().getLeftGoalArea().getScore().setName(newValue);
@@ -74,7 +77,10 @@ public class GameController {
 
 
         animationTimer = new DrawingThread(canvas, game);
-        start.setOnAction((event) -> ((DrawingThread) animationTimer).setStartness());
+        start.setOnAction((event) -> {
+            ((DrawingThread) animationTimer).setStartness();
+            this.game.saveGame();
+        });
         animationTimer.start();
     }
 

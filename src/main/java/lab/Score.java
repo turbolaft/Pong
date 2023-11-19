@@ -2,16 +2,16 @@ package lab;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Scanner;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Score extends Entity implements DrawableSimulable {
+public class Score extends Entity implements DrawableSimulable, Serializable {
     private int count;
     private String name;
     private Boolean lastToScore = false;
@@ -85,6 +85,10 @@ public class Score extends Entity implements DrawableSimulable {
 
     public String getName() {
         return name;
+    }
+
+    public int getCount() {
+        return this.count;
     }
 
     public void setName(String name) {

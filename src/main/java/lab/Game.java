@@ -1,6 +1,13 @@
 package lab;
 
 import javafx.scene.paint.Color;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -21,7 +28,7 @@ public class Game implements DrawableSimulable {
         upperBounds = 20;
         lowerBounds = this.height - this.upperBounds;
 
-        scoreManager = new ScoreManager(this);
+        scoreManager = loadGame();
         initializeOriginal();
 
         // CENTER BLOCKS
@@ -81,6 +88,35 @@ public class Game implements DrawableSimulable {
 
     }
 
+    public void saveGame() {
+        try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("scoreManager.obj"))) {
+            os.writeObject(scoreManager);
+            scoreManager.writeObject(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ScoreManager loadGame() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("scoreManager.obj"))) {
+            ScoreManager sm = (ScoreManager) ois.readObject();
+            Point2D[] positions = new Point2D[4];
+
+            for (int i = 0; i < positions.length; i++) {
+                positions[i] = new Point2D(ois.readDouble(), ois.readDouble());
+            }
+
+            sm.readObject(positions);
+            return sm;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void initializeOriginal() {
         Point2D newBallPos = null, newVelocity = null, newAcceleration = null;
 
@@ -97,7 +133,6 @@ public class Game implements DrawableSimulable {
         }
 
         isStopped = true;
-
         objects[0] = new Ball(this, 20, 20, newBallPos, newAcceleration, newVelocity, scoreManager);
         objects[1] = new Bat(this, 20, 100, new Point2D(width - 20, 20), new Point2D(1, 40));
         objects[2] = new Bat(this, 20, 100, new Point2D(10, height - 120), new Point2D(1, 40));

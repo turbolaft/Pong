@@ -1,2 +1,0 @@
-User 2 name:1
-User 1 name:1
